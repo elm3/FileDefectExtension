@@ -1,22 +1,17 @@
 function raise_defect() {
-  console.log("Raise a defect from here :-)");
+  // Note: I used a chrome extension "Selector Gadget" to determine these
+  // jquery tags.  I would LOVE to use ids but the code is not structured that
+  // way.
+  var title = $("#mbed-content h2").text();
+  var descr = $("#mbed-content p").text();
+  var author = $(".authortext a").text();
+  var reporttime = $("#mbed-content abbr").attr("title");
 
-  header2s = document.body.getElementsByTagName("h2");
-  for (let header2 of header2s) {
-    console.log("headers: " + header2.innerText);
-  }
-
-  tix_body = document.body.getElementsByClassName("ten columns editcontentitem");
-  tix_items = tix_body[0].getElementsByTagName("p");
-  for( let tix_item of tix_items ) {
-    console.log("item: " + tix_item.innerText);
-  }
+  chrome.runtime.sendMessage({type:'file_jira', title:title, descr:descr, author:author, reporttime:reporttime});
 }
 
-console.log("Extension is loaded");
-(function() {
-  console.log("add_button(): called");
-  form = document.getElementsByClassName("three columns sidebar");
+$(function() {
+  form = $(".sidebar");
   if (form.length == 0) {
     console.log("Error: add_button() cannot find element class: 'three column sidebar'");
     return;
@@ -29,4 +24,4 @@ console.log("Extension is loaded");
   defect_button.addEventListener('click', raise_defect);
 
   form[0].appendChild(defect_button);
-})();
+});
